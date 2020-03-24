@@ -1,6 +1,6 @@
 /*
 ** Lexical analyzer.
-** Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2020 Mike Pall. See Copyright Notice in luajit.h
 **
 ** Major portions taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2008 Lua.org, PUC-Rio. See Copyright Notice in lua.h
@@ -51,6 +51,7 @@ static LJ_NOINLINE LexChar lex_more(LexState *ls)
   if (sz >= LJ_MAX_BUF) {
     if (sz != ~(size_t)0) lj_err_mem(ls->L);
     sz = ~(uintptr_t)0 - (uintptr_t)p;
+    if (sz >= LJ_MAX_BUF) sz = LJ_MAX_BUF-1;
     ls->endmark = 1;
   }
   ls->pe = p + sz;
@@ -104,7 +105,7 @@ static void lex_number(LexState *ls, TValue *tv)
     lex_savenext(ls);
   }
   lex_save(ls, '\0');
-  fmt = lj_strscan_scan((const uint8_t *)sbufB(&ls->sb), tv,
+  fmt = lj_strscan_scan((const uint8_t *)sbufB(&ls->sb), sbuflen(&ls->sb)-1, tv,
 	  (LJ_DUALNUM ? STRSCAN_OPT_TOINT : STRSCAN_OPT_TONUM) |
 	  (LJ_HASFFI ? (STRSCAN_OPT_LL|STRSCAN_OPT_IMAG) : 0));
   if (LJ_DUALNUM && fmt == STRSCAN_INT) {
