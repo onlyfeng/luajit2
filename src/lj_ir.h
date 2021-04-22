@@ -1,6 +1,6 @@
 /*
 ** SSA IR (Intermediate Representation) format.
-** Copyright (C) 2005-2020 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #ifndef _LJ_IR_H
@@ -124,8 +124,8 @@
   \
   /* Buffer operations. */ \
   _(BUFHDR,	L , ref, lit) \
-  _(BUFPUT,	L , ref, ref) \
-  _(BUFSTR,	A , ref, ref) \
+  _(BUFPUT,	LW, ref, ref) \
+  _(BUFSTR,	AW, ref, ref) \
   \
   /* Barriers. */ \
   _(TBAR,	S , ref, ___) \
@@ -139,9 +139,9 @@
   _(STRTO,	N , ref, ___) \
   \
   /* Calls. */ \
-  _(CALLN,	N , ref, lit) \
-  _(CALLA,	A , ref, lit) \
-  _(CALLL,	L , ref, lit) \
+  _(CALLN,	NW, ref, lit) \
+  _(CALLA,	AW, ref, lit) \
+  _(CALLL,	LW, ref, lit) \
   _(CALLS,	S , ref, lit) \
   _(CALLXS,	S , ref, ref) \
   _(CARG,	N , ref, ref) \

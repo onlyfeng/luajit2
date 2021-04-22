@@ -1,6 +1,6 @@
 /*
 ** Snapshot handling.
-** Copyright (C) 2005-2020 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #define lj_snap_c
@@ -171,6 +171,7 @@ static void snapshot_stack(jit_State *J, SnapShot *snap, MSize nsnapmap)
   nent += snapshot_framelinks(J, p + nent, &snap->topslot);
   snap->mapofs = (uint32_t)nsnapmap;
   snap->ref = (IRRef1)J->cur.nins;
+  snap->mcofs = 0;
   snap->nslots = (uint8_t)nslots;
   snap->count = 0;
   J->cur.nsnapmap = (uint32_t)(nsnapmap + nent);

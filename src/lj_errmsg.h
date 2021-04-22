@@ -1,6 +1,6 @@
 /*
 ** VM error messages.
-** Copyright (C) 2005-2020 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
 
 /* This file may be included multiple times with different ERRDEF macros. */
@@ -177,6 +177,16 @@ ERRDEF(FFI_CBACKOV,	"too many callbacks")
 #endif
 ERRDEF(FFI_NYIPACKBIT,	"NYI: packed bit fields")
 ERRDEF(FFI_NYICALL,	"NYI: cannot call this C function (yet)")
+#endif
+
+#if LJ_HASBUFFER
+/* String buffer errors. */
+ERRDEF(BUFFER_BADENC,	"cannot serialize " LUA_QS)
+ERRDEF(BUFFER_BADDEC,	"cannot deserialize tag 0x%02x")
+ERRDEF(BUFFER_DEPTH,	"too deep to serialize")
+ERRDEF(BUFFER_DUPKEY,	"duplicate table key")
+ERRDEF(BUFFER_EOB,	"unexpected end of buffer")
+ERRDEF(BUFFER_LEFTOV,	"left-over data in buffer")
 #endif
 
 #undef ERRDEF

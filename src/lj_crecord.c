@@ -1,6 +1,6 @@
 /*
 ** Trace recorder for C data operations.
-** Copyright (C) 2005-2020 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #define lj_ffrecord_c
@@ -1024,8 +1024,26 @@ static void crec_alloc(jit_State *J, RecordFFData *rd, CTypeID id)
 	crec_ct_tv(J, dc, dp, sp, sval);
       }
     } else if (ctype_isstruct(d->info)) {
-      CTypeID fid = d->sib;
+      CTypeID fid;
       MSize i = 1;
+      if (!J->base[1]) {  /* Handle zero-fill of struct-of-NYI. */
+	fid = d->sib;
+	while (fid) {
+	  CType *df = ctype_get(cts, fid);
+	  fid = df->sib;
+	  if (ctype_isfield(df->info)) {
+	    CType *dc;
+	    if (!gcref(df->name)) continue;  /* Ignore unnamed fields. */
+	    dc = ctype_rawchild(cts, df);  /* Field type. */
+	    if (!(ctype_isnum(dc->info) || ctype_isptr(dc->info) ||
+		  ctype_isenum(dc->info)))
+	      goto special;
+	  } else if (!ctype_isconstval(df->info)) {
+	    goto special;
+	  }
+	}
+      }
+      fid = d->sib;
       while (fid) {
 	CType *df = ctype_get(cts, fid);
 	fid = df->sib;
@@ -1050,6 +1068,11 @@ static void crec_alloc(jit_State *J, RecordFFData *rd, CTypeID id)
 	  dp = emitir(IRT(IR_ADD, IRT_PTR), trcd,
 		      lj_ir_kintp(J, df->size + sizeof(GCcdata)));
 	  crec_ct_tv(J, dc, dp, sp, sval);
+	  if ((d->info & CTF_UNION)) {
+	    if (d->size != dc->size)  /* NYI: partial init of union. */
+	      lj_trace_err(J, LJ_TRERR_NYICONV);
+	    break;
+	  }
 	} else if (!ctype_isconstval(df->info)) {
 	  /* NYI: init bitfields and sub-structures. */
 	  lj_trace_err(J, LJ_TRERR_NYICONV);
