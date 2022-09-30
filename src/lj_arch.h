@@ -93,6 +93,9 @@
 #elif defined(__CYGWIN__)
 #define LJ_TARGET_CYGWIN	1
 #define LUAJIT_OS	LUAJIT_OS_POSIX
+#elif defined(__QNX__)
+#define LJ_TARGET_QNX		1
+#define LUAJIT_OS	LUAJIT_OS_POSIX
 #else
 #define LUAJIT_OS	LUAJIT_OS_OTHER
 #endif
@@ -165,6 +168,13 @@
 #define LJ_TARGET_XBOXONE	1
 #define LJ_TARGET_CONSOLE	1
 #define LJ_TARGET_GC64		1
+#endif
+
+#ifdef __NX__
+#define LJ_TARGET_NX		1
+#define LJ_TARGET_CONSOLE	1
+#undef NULL
+#define NULL ((void*)0)
 #endif
 
 #ifdef _UWP
