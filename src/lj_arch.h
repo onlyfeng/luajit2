@@ -215,8 +215,7 @@
 #define LJ_TARGET_MASKROT	1
 #define LJ_TARGET_UNALIGNED	1
 #define LJ_ARCH_NUMMODE		LJ_NUMMODE_SINGLE_DUAL
-//#ifndef LUAJIT_DISABLE_GC64
-#ifdef LUAJIT_ENABLE_GC64
+#ifndef LUAJIT_DISABLE_GC64
 #define LJ_TARGET_GC64		1
 #elif LJ_TARGET_OSX
 #error "macOS requires GC64 -- don't disable it"
